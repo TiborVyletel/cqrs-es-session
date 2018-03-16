@@ -11,6 +11,7 @@ public interface CommandOutcome {
 
     enum StatusCode {
         OK,
+        NOT_MODIFIED,
         ACCEPTED,
         BAD_COMMAND;
     }
@@ -33,6 +34,13 @@ public interface CommandOutcome {
                 .status(StatusCode.BAD_COMMAND)
                 .error(CommandError.unsupportedCommand(command, state))
                 .build();
+    }
+
+    static CommandOutcome noOp() {
+        return CommandOutcomeBuilder.empty()
+                .status(StatusCode.NOT_MODIFIED)
+                .build();
+
     }
 
 }

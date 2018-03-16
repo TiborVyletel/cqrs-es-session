@@ -4,6 +4,8 @@ import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akka.persistence.AbstractPersistentActor;
+import akka.persistence.PersistentRepr;
+import akka.persistence.RecoveryCompleted;
 import event.sourcing.command.Command;
 import event.sourcing.command.CommandHandler;
 import event.sourcing.command.CommandOutcome;
@@ -46,12 +48,19 @@ public class EventSourcingActor<ID extends AggregateId, A> extends AbstractPersi
     @Override
     public Receive createReceiveRecover() {
         return receiveBuilder()
+                .match(PersistentRepr.class, m -> {
+                    log.info(m.toString());
+                })
                 .match(DomainEvent.class, this::applyEvent)
+                .match(RecoveryCompleted.class, evt -> {
+                    log.info("Recovery completed. Current sequence: {}", lastSequenceNr());
+                })
                 .build();
     }
 
     void applyEvent(DomainEvent evt) {
         this.state = applicator.apply(state, evt);
+        log.info("Event applied during recovery: {}", evt);
     }
 
     @Override

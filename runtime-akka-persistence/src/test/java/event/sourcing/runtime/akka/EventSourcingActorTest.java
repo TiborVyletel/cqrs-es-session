@@ -7,20 +7,22 @@ import com.typesafe.config.ConfigFactory;
 import event.sourcing.identity.AggregateId;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import scala.concurrent.duration.Duration;
 
+@Ignore
 public class EventSourcingActorTest {
 
     static ActorSystem system;
 
     @BeforeClass
-    public static void setup() {
+    public static void setUp() {
         system = ActorSystem.create("persistence-sys", ConfigFactory.load("jdbc-journal-test.conf"));
     }
 
     @AfterClass
-    public static void teardown() {
+    public static void tearDown() {
         TestKit.shutdownActorSystem(system, Duration.apply("10 s"), true);
         system = null;
     }

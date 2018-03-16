@@ -35,10 +35,11 @@ class CustomerIdInternals {
     private static Instant START = Instant.parse("2018-01-01T00:00:00Z");
 
     public static String random() {
-        return hashids.encode(Thread.currentThread().getId(), rndVal(), START.minusMillis(System.currentTimeMillis()).toEpochMilli() / 1000);
+        long seconds = START.minusMillis(System.currentTimeMillis()).toEpochMilli() / 1000;
+        return hashids.encode(rndVal(), Math.abs(seconds));
     }
 
-    public static long rndVal() {
+    public static int rndVal() {
         return RND.nextInt(32678);
     }
 }

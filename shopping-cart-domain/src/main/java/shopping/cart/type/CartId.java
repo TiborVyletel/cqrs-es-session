@@ -1,9 +1,11 @@
 package shopping.cart.type;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import event.sourcing.identity.AggregateId;
 import org.immutables.value.Value;
 
 @Value.Immutable
+@JsonDeserialize(builder = CartIdBuilder.class)
 public abstract class CartId implements AggregateId {
 
     protected abstract String value();
@@ -14,7 +16,9 @@ public abstract class CartId implements AggregateId {
     }
 
     public static CartId of(String value) {
-        throw new UnsupportedOperationException("!");
+        return CartIdBuilder.empty()
+                .value(value)
+                .build();
     }
 
     public static CartId random() {

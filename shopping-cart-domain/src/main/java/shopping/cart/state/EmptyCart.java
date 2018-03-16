@@ -1,16 +1,20 @@
 package shopping.cart.state;
 
+import event.sourcing.command.CommandOutcome;
 import shopping.cart.command.AddProduct;
+import shopping.cart.event.ProductAdded;
 
 public class EmptyCart extends ShoppingCart {
 
-    void add(AddProduct cmd) {
-
+    public CommandOutcome add(AddProduct cmd) {
+        return CommandOutcome.ok(ProductAdded.create(cmd.getProduct(), cmd.getQuantity()));
     }
 
-    void clear() {
-        // do nothing
+    CommandOutcome clear() {
+        return CommandOutcome.noOp();
     }
 
-//    void remove(Re)
+    public ShoppingCart onProductAdded(ProductAdded evt) {
+        return new NonEmptyCart(evt.getProductId(), evt.getQuantity());
+    }
 }
